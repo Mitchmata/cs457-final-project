@@ -1,9 +1,9 @@
 # CS 457 Project Statement of Work (SOW) & Protocol Specification Template
 
-**Student Name:** [Your Full Name]  
-**Date:** [YYYY-MM-DD]  
+**Student Name:** Mitchel Mata  
+**Date:** 9/20/2026 
 **Course:** CS 457 - Computer Networks  
-**Target Server Domain:** `server.[yourlastname].edu`  
+**Target Server Domain:** `server.mata.edu
 
 ---
 
@@ -17,34 +17,37 @@
 > - You are encouraged to use python, but I'm not going to make it a strict requirement. The instructor and TA's ability to help with C or Rust, etc will be diminished in other languages.
 
 ### 1.1 Game Overview
-- **Chosen Game:** [e.g., Terminal Trivia, Tic-Tac-Toe, Connect Four, Battleship]
+- **Chosen Game:** Connect 4
 - **Player Capacity:** 2 Players (Simulated via 2 CML Client nodes)
-- **Game Summary:** [Briefly describe the gameplay mechanics and rules]
+- **Game Summary:** Connect 4 is a classic turn-based connection game played on a standard vertical 6x7 board. Two networked clients connect to a central server and take turns dropping tokens into columns. The tokens drop to the lowest unoccupied slot in the selected column. The game will run strictly in the console using ASCII rendering so it stays lightweight and doesn't run into rendering issues on CML nodes.
 
 ### 1.2 Core Game Rules & Win/Draw Conditions
-- **Turn Mechanics:** [Explain how turn order is enforced between Player 1 and Player 2]
-- **Victory Condition:** [Define how a player wins the game]
-- **Draw/Tie Condition:** [Define how a draw/tie is detected and handled]
-
+- **Turn Mechanics:** The server is authoritative and tracks whose turn it is. The first client to connect gets assigned Player 1 (`X`) and takes the first turn. The second client to connect gets Player 2 (`O`). The server only accepts inputs from the active player's socket connection—any input sent out of turn is ignored or returned with a turn error. On their turn, a player picks a column index (0–6). If the column has space, the move is placed and turn control flips to the other player.
+- **Victory Condition:** A player wins as soon as they get 4 matching tokens in an unbroken line:
+  - **Horizontal:** 4 in the same row.
+  - **Vertical:** 4 in the same column.
+  - **Diagonal:** 4 along either an ascending or descending slope.
+- **Victory Condition:** A player wins as soon as they get 4 matching tokens in an unbroken line:
+- **Draw/Tie Condition:** A draw happens if all 42 slots on the 6x7 board fill up without either player getting 4 in a row. The server checks if the top row across all columns is completely occupied; if so and there's no winner, it broadcasts a `GAME_OVER` draw state and shuts down the match cleanly.
 ---
 
 ## 2. Application-Layer Messaging Protocol Blueprint (Sprint 1 Deliverable)
 
 ### 2.1 Message Transport & Serialization Format
 - **Transport Protocol:** TCP
-- **Serialization Format:** [JSON / Fixed-Header Binary / Delimited Text]
-- **Framing Mechanism:** [e.g., Newline-delimited (`\n`) JSON payloads OR 4-byte big-endian length prefix]
+- **Serialization Format:** JSON
+- **Framing Mechanism:** Newline-delimited (`\n`) JSON strings. This keeps message boundaries simple and reliable over TCP byte streams without dealing with complex binary packing.
 
 ### 2.2 Message Schema Definitions
 
 #### Message Types:
-1. `CONNECT` (Client -> Server): Request to join the game room.
-2. `LOBBY_WAIT` (Server -> Client): Notification that server is waiting for Player 2.
-3. `GAME_START` (Server -> Clients): Game initiated, assigns roles (e.g. Player X vs Player O).
-4. `MOVE` (Client -> Server): Player action (e.g., cell coordinates or answer choice).
-5. `STATE_UPDATE` (Server -> Clients): Broadcast current game board / state and active player turn.
-6. `GAME_OVER` (Server -> Clients): Victory / Draw notification with final scores.
-7. `ERROR` (Server -> Client): Invalid move or malformed packet error.
+1. `CONNECT` (Client -> Server): Request to join the game session.
+2. `LOBBY_WAIT` (Server -> Client): Informs Client 1 they are waiting for Client 2.
+3. `GAME_START` (Server -> Clients): Notifies both clients that the match is starting and assigns roles (`Player 1` vs `Player 2`).
+4. `MOVE` (Client -> Server): Active client sends their chosen column (0–6).
+5. `STATE_UPDATE` (Server -> Clients): Server broadcasts the updated 6x7 board state and indicates whose turn is next.
+6. `GAME_OVER` (Server -> Clients): Broadcasts the game result (winner or draw) and final board state.
+7. `ERROR` (Server -> Client): Sent to a client if they make an invalid move (column full, out of bounds, or moving out of turn).
 
 #### Example JSON Protocol Schema:
 ```json
@@ -52,8 +55,7 @@
   "msg_type": "MOVE",
   "player_id": "Player_1",
   "payload": {
-    "row": 0,
-    "col": 2
+    "col": 3
   },
   "timestamp": 1727000000
 }
