@@ -71,12 +71,12 @@
 ## 3. Game Behavior & Server Concurrency Architecture (Sprint 2 Deliverable)
 
 ### 3.1 Server Concurrency Strategy
-- **Architecture Choice:** [Multi-Threading (`threading.Thread`) OR Non-blocking I/O multiplexing (`select.select` / `selectors`)]
-- **Synchronization Logic:** Explain how shared game state and client list are thread-safe (e.g. `threading.Lock`) to prevent race conditions during turn processing.
+- **Architecture Choice:** Non-blocking I/O multiplexing (`selectors.DefaultSelector`). The server runs a single-threaded event loop monitoring the listening socket and client sockets configured with `sock.setblocking(False)`. Ready descriptors are dispatched sequentially via `selector.select(timeout=1.0)`. Non-blocking reads accumulate bytes into an per-connection `rx_buf` where frames are extracted only after the full 4-byte header and exact payload length arrive, preventing head-of-line blocking and busy loops without using multithreading.
+- **Synchronization Logic:** Shared game state (board grid, active turn, move count, connected client list, and scores) is serialized by execution order rather than thread locks (`threading.Lock`). Because the server is single-threaded and handlers run indivisibly to completion, race conditions and deadlocks are impossible by design. Client identity is strictly bound to the internal socket connection handle (`conn.slot`) rather than any client-provided payload alias, preventing state tampering or spoofing.
 
 ### 3.2 State & Score Synchronization Across Clients
-- **Turn Enforcement:** Detail how the server validates active player ID before processing moves and broadcasts updated turn notifications to all clients.
-- **Score & Board Synchronization:** Describe how state broadcasts keep client screens synchronized in real time.
+- **Turn Enforcement:** Inbound `MOVE` frames are evaluated against a strict validation sequence: ensuring the match phase is `PLAYER_TURN`, the sender's alias matches `engine.current_turn`, the column index is within bounds ($0 \le \text{col} \le 6$), and the target column is not full (`board[0][col] == " "`). Any failure emits a unicast `ERROR` packet exclusively to the offending client while leaving the board, move count, and turn pointer completely unchanged. Out-of-turn submissions do not forfeit the player's turn.
+- **Score & Board Synchronization:** Upon a valid move, the server applies gravity, executes win/draw vector scans, and toggles the active turn in one uninterrupted step. A unified `STATE_UPDATE` payload containing the latest move coordinates, current turn, and the updated $6 \times 7$ board matrix is serialized once and enqueued back-to-back to both clients' transmit buffers (`tx_buf`), ensuring identical board views and ordered state history over TCP. In-memory session scores (`wins`, `losses`, `draws`) are tracked across consecutive rounds and broadcast to both players inside `GAME_START` and `GAME_OVER` payloads[cite: 4].
 
 ---
 
