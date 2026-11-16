@@ -1,0 +1,376 @@
+Sprint 3 - Intermediate Gameplay Execution Log
+Tested locally: python3 server.py -p 8080 ; python3 client.py -i localhost -p 8080 -n <Alice|Bob>
+Result: two clients, 7 turns, Alice wins with a horizontal connect four.
+
+################ SERVER LOG ################
+22:25:32 [INFO] FSM: [INIT]
+22:25:32 [INFO] Listening on 0.0.0.0:8080
+22:25:32 [INFO] FSM: [WAITING_FOR_PLAYERS]
+22:25:32 [INFO] Accepted connection from 127.0.0.1:35158
+22:25:32 [INFO] RX CONNECT    from ('127.0.0.1', 35158)
+22:25:32 [INFO] Registered Alice as Player 1 (X)
+22:25:32 [INFO] TX LOBBY_WAIT to Alice
+22:25:33 [INFO] Accepted connection from 127.0.0.1:35160
+22:25:33 [INFO] RX CONNECT    from ('127.0.0.1', 35160)
+22:25:33 [INFO] Registered Bob as Player 2 (O)
+22:25:33 [INFO] FSM: [GAME_START]
+22:25:33 [INFO] FSM: WAITING_FOR_PLAYERS -> PLAYER_TURN
+22:25:33 [INFO] TX GAME_START to Alice
+22:25:33 [INFO] TX GAME_START to Bob
+22:25:33 [INFO] RX MOVE       from Alice
+22:25:33 [INFO] FSM: [EVALUATE_MOVE]
+22:25:33 [INFO] Move accepted: Alice dropped X in column 0 (row 5)
+22:25:33 [INFO] FSM: [CHECK_WIN_DRAW]
+22:25:33 [INFO] TX STATE_UPDATE to Alice (turn: Bob)
+22:25:33 [INFO] TX STATE_UPDATE to Bob (turn: Bob)
+22:25:33 [INFO] FSM: [PLAYER_TURN]
+22:25:33 [INFO] RX MOVE       from Bob
+22:25:33 [INFO] FSM: [EVALUATE_MOVE]
+22:25:33 [INFO] Move accepted: Bob dropped O in column 0 (row 4)
+22:25:33 [INFO] FSM: [CHECK_WIN_DRAW]
+22:25:33 [INFO] TX STATE_UPDATE to Alice (turn: Alice)
+22:25:33 [INFO] TX STATE_UPDATE to Bob (turn: Alice)
+22:25:33 [INFO] FSM: [PLAYER_TURN]
+22:25:33 [INFO] RX MOVE       from Alice
+22:25:33 [INFO] FSM: [EVALUATE_MOVE]
+22:25:33 [INFO] Move accepted: Alice dropped X in column 1 (row 5)
+22:25:33 [INFO] FSM: [CHECK_WIN_DRAW]
+22:25:33 [INFO] TX STATE_UPDATE to Alice (turn: Bob)
+22:25:33 [INFO] TX STATE_UPDATE to Bob (turn: Bob)
+22:25:33 [INFO] FSM: [PLAYER_TURN]
+22:25:33 [INFO] RX MOVE       from Bob
+22:25:33 [INFO] FSM: [EVALUATE_MOVE]
+22:25:33 [INFO] Move accepted: Bob dropped O in column 1 (row 4)
+22:25:33 [INFO] FSM: [CHECK_WIN_DRAW]
+22:25:33 [INFO] TX STATE_UPDATE to Alice (turn: Alice)
+22:25:33 [INFO] TX STATE_UPDATE to Bob (turn: Alice)
+22:25:33 [INFO] FSM: [PLAYER_TURN]
+22:25:33 [INFO] RX MOVE       from Alice
+22:25:33 [INFO] FSM: [EVALUATE_MOVE]
+22:25:33 [INFO] Move accepted: Alice dropped X in column 2 (row 5)
+22:25:33 [INFO] FSM: [CHECK_WIN_DRAW]
+22:25:33 [INFO] TX STATE_UPDATE to Alice (turn: Bob)
+22:25:33 [INFO] TX STATE_UPDATE to Bob (turn: Bob)
+22:25:33 [INFO] FSM: [PLAYER_TURN]
+22:25:33 [INFO] RX MOVE       from Bob
+22:25:33 [INFO] FSM: [EVALUATE_MOVE]
+22:25:33 [INFO] Move accepted: Bob dropped O in column 2 (row 4)
+22:25:33 [INFO] FSM: [CHECK_WIN_DRAW]
+22:25:33 [INFO] TX STATE_UPDATE to Alice (turn: Alice)
+22:25:33 [INFO] TX STATE_UPDATE to Bob (turn: Alice)
+22:25:33 [INFO] FSM: [PLAYER_TURN]
+22:25:33 [INFO] RX MOVE       from Alice
+22:25:33 [INFO] FSM: [EVALUATE_MOVE]
+22:25:33 [INFO] Move accepted: Alice dropped X in column 3 (row 5)
+22:25:33 [INFO] FSM: [CHECK_WIN_DRAW]
+22:25:33 [INFO] FSM: [GAME_OVER]
+22:25:33 [INFO] FSM: PLAYER_TURN -> GAME_OVER
+22:25:33 [INFO] Result: WIN winner=Alice reason=CONNECT_FOUR
+22:25:33 [INFO] TX GAME_OVER to Alice
+22:25:33 [INFO] TX GAME_OVER to Bob
+22:25:33 [INFO] FSM: [CLEANUP]
+22:25:33 [INFO] FSM: GAME_OVER -> WAITING_FOR_PLAYERS
+22:25:34 [INFO] Shutting down.
+
+################ CLIENT 1 (Alice) CONSOLE ################
+Connected to localhost (127.0.0.1:8080).
+Waiting for Player 2 to connect...
+
+=== Game start: you are Alice (X) vs Bob ===
+Scores - Alice: 0W 0L 0D | Bob: 0W 0L 0D
+  0   1   2   3   4   5   6
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+
+>>> Your Turn (X) <<<
+Choose a column 0-6 (or type 'quit'): Invalid input. Enter a number from 0 to 6.
+
+>>> Your Turn (X) <<<
+Choose a column 0-6 (or type 'quit'): Invalid input. Enter a number from 0 to 6.
+
+>>> Your Turn (X) <<<
+Choose a column 0-6 (or type 'quit'): 
+Alice (X) dropped a token in column 0.
+  0   1   2   3   4   5   6
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+| X |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+
+Waiting for Bob...
+
+Bob (O) dropped a token in column 0.
+  0   1   2   3   4   5   6
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+| O |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+| X |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+
+>>> Your Turn (X) <<<
+Choose a column 0-6 (or type 'quit'): 
+Alice (X) dropped a token in column 1.
+  0   1   2   3   4   5   6
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+| O |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+| X | X |   |   |   |   |   |
++---+---+---+---+---+---+---+
+
+Waiting for Bob...
+
+Bob (O) dropped a token in column 1.
+  0   1   2   3   4   5   6
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+| O | O |   |   |   |   |   |
++---+---+---+---+---+---+---+
+| X | X |   |   |   |   |   |
++---+---+---+---+---+---+---+
+
+>>> Your Turn (X) <<<
+Choose a column 0-6 (or type 'quit'): 
+Alice (X) dropped a token in column 2.
+  0   1   2   3   4   5   6
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+| O | O |   |   |   |   |   |
++---+---+---+---+---+---+---+
+| X | X | X |   |   |   |   |
++---+---+---+---+---+---+---+
+
+Waiting for Bob...
+
+Bob (O) dropped a token in column 2.
+  0   1   2   3   4   5   6
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+| O | O | O |   |   |   |   |
++---+---+---+---+---+---+---+
+| X | X | X |   |   |   |   |
++---+---+---+---+---+---+---+
+
+>>> Your Turn (X) <<<
+Choose a column 0-6 (or type 'quit'): 
+=== GAME OVER ===
+  0   1   2   3   4   5   6
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+| O | O | O |   |   |   |   |
++---+---+---+---+---+---+---+
+| X | X | X | X |   |   |   |
++---+---+---+---+---+---+---+
+You WIN! Connect four!
+Scores - Alice: 1W 0L 0D | Bob: 0W 1L 0D
+
+################ CLIENT 2 (Bob) CONSOLE ################
+Connected to localhost (127.0.0.1:8080).
+
+=== Game start: you are Bob (O) vs Alice ===
+Scores - Alice: 0W 0L 0D | Bob: 0W 0L 0D
+  0   1   2   3   4   5   6
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+
+Waiting for Alice...
+
+Alice (X) dropped a token in column 0.
+  0   1   2   3   4   5   6
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+| X |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+
+>>> Your Turn (O) <<<
+Choose a column 0-6 (or type 'quit'): 
+Bob (O) dropped a token in column 0.
+  0   1   2   3   4   5   6
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+| O |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+| X |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+
+Waiting for Alice...
+
+Alice (X) dropped a token in column 1.
+  0   1   2   3   4   5   6
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+| O |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+| X | X |   |   |   |   |   |
++---+---+---+---+---+---+---+
+
+>>> Your Turn (O) <<<
+Choose a column 0-6 (or type 'quit'): 
+Bob (O) dropped a token in column 1.
+  0   1   2   3   4   5   6
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+| O | O |   |   |   |   |   |
++---+---+---+---+---+---+---+
+| X | X |   |   |   |   |   |
++---+---+---+---+---+---+---+
+
+Waiting for Alice...
+
+Alice (X) dropped a token in column 2.
+  0   1   2   3   4   5   6
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+| O | O |   |   |   |   |   |
++---+---+---+---+---+---+---+
+| X | X | X |   |   |   |   |
++---+---+---+---+---+---+---+
+
+>>> Your Turn (O) <<<
+Choose a column 0-6 (or type 'quit'): 
+Bob (O) dropped a token in column 2.
+  0   1   2   3   4   5   6
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+| O | O | O |   |   |   |   |
++---+---+---+---+---+---+---+
+| X | X | X |   |   |   |   |
++---+---+---+---+---+---+---+
+
+Waiting for Alice...
+
+=== GAME OVER ===
+  0   1   2   3   4   5   6
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+
+| O | O | O |   |   |   |   |
++---+---+---+---+---+---+---+
+| X | X | X | X |   |   |   |
++---+---+---+---+---+---+---+
+You lose. Alice connected four.
+Scores - Alice: 1W 0L 0D | Bob: 0W 1L 0D
